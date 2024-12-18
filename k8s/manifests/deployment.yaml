@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: newdyn
+spec:
+  selector:
+    matchLabels:
+      app: newdyn
+  template:
+    metadata:
+      labels:
+        app: newdyn
+    spec:
+      containers:
+      - name: newdyn
+        image: meetvasani/newdyn
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80

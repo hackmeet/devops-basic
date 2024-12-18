@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css    "
+    />
+    <title>Document</title>
+  </head>
+
+  <body class="bg-dark text-light">
+    <div class="text-warning text-center mt-3" id="alert"></div>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-12">
+          <div class="p-2 border mt-5 rounded">
+            <div class="text-center bg-success-primary rounded">
+              Registration Form
+            </div>
+            <div class="mx-auto p-2">
+              <label class="form-label">Name</label>
+              <input
+                class="form-control"
+                id="name"
+                type="text"
+                placeholder="Your name"
+                aria-label="default input example"
+                onkeydown="blockNumbers(event)"
+
+              />
+            </div>
+            <div class="mx-auto p-2">
+              <label class="form-label">Age</label>
+              <input
+                class="form-control"
+                id="age"
+                type="text"
+                placeholder="Your age"
+                aria-label="default input example"
+              />
+            </div>
+            <div class="mx-auto p-2">
+              <label class="form-label">Phone Number</label>
+              <input
+                class="form-control"
+                id="pno"
+                type="text"
+                placeholder="Your Number"
+                aria-label="default input example"
+              />
+            </div>
+            <div class="mx-auto p-2">
+              <label class="form-label">Email address</label>
+              <input
+                type="email"
+                id="email"
+                class="form-control"
+                placeholder="abc@gmail.com"
+              />
+            </div>
+            <div class="text-center">
+              <div class="d-inline col-3 mx-auto">
+                <button
+                  type="button"
+                  id="register"
+                  class="btn btn-outline-success btn-lg"
+                  onclick="register()"
+                >
+                  Register
+                </button>
+              </div>
+              <div class="d-inline col-3 mx-auto">
+                <button
+                id="delete"
+                  type="button"
+                  class="btn btn-outline-danger btn-lg"
+                  onclick="del()"
+                >
+                  Delete
+                </button>
+              </div>
+              <div class="d-inline col-3 mx-auto">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary btn-lg"
+                  onclick="update()"
+                >
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-8 col-12 mt-5">
+          <div class="table-responsive">
+            <table class="table table-dark table-striped">
+              <thead>
+                <th scope="col"></th>
+                <th scope="col">Name</th>
+                <th scope="col">Age</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Email</th>
+                <th scope="col"></th>
+              </thead>
+              <tbody id="myBody" class=""></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    function register() {
+      var refToMyBody = document.getElementById("myBody");
+      var refToName = document.getElementById("name");
+      var refToAge = document.getElementById("age");
+      var refToPhoneNumber = document.getElementById("pno");
+      var refToEmail = document.getElementById("email");
+
+      if (
+        refToName.value === "" ||
+        refToAge.value === "" ||
+        refToPhoneNumber.value === "" ||
+        refToEmail.value === ""
+      ) {
+        document.getElementById("alert").innerText =
+          "All the fields are required !";
+        return;
+      }
+
+      if (isNaN(refToAge.value) || parseFloat(refToAge.value) <= 0) {
+        document.getElementById("alert").innerText =
+          "Please enter a valid age !";
+
+        return;
+      }
+
+      if (
+        isNaN(refToPhoneNumber.value) ||
+        refToPhoneNumber.value.length != 10
+      ) {
+        document.getElementById("alert").innerText =
+          "Please enter a valid Phone Number !";
+        return;
+      }
+
+      var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailPattern.test(refToEmail.value)) {
+        document.getElementById("alert").innerText =
+          "Please enter a valid Email address !";
+        return;
+      }
+
+      refToMyBody.innerHTML =
+        refToMyBody.innerHTML +
+        `<tr>
+        <td><input class="form-check-input" type="checkbox" ></td>
+        <td>${refToName.value}</td>
+        <td>${refToAge.value}</td>
+        <td>${refToPhoneNumber.value}</td>
+        <td>${refToEmail.value}</td>
+        <td><button class="btn btn-outline-primary btn-sm" onclick="editRow(this)">Edit</button></td>
+        </tr>`;
+
+      document.getElementById("alert").innerText = "Data added successfully!";
+      refToName.value = "";
+      refToAge.value = "";
+      refToPhoneNumber.value = "";
+      refToEmail.value = "";
+    }
+
+    function del() {
+      debugger;
+      var myBody = document.getElementById("myBody");
+      var rows = myBody.rows.length;
+      // console.log(rows);
+      // console.log(myBody.rows[0].cells[0].children[0].checked)
+      debugger; 
+      if (rows > 0) {
+        for (var i = rows - 1; i >= 0; i--) {
+          if (myBody.rows[i].cells[0].children[0].checked) {
+            myBody.deleteRow(i);
+            document.getElementById("alert").innerText =
+              "Data deleted successfully!";
+              return;
+          }else{
+              document.getElementById("alert").innerText = "select atleast one row to delete !";
+          }
+        }
+      } else {
+        document.getElementById("alert").innerText = "No rows to delete !";
+       
+      }
+    }
+
+    let editedRow = null;
+
+    function editRow(button) {
+      editedRow = button.closest("tr");
+
+      const cells = editedRow.cells;
+      // console.log(cells[1].innerText);
+      // console.log(cells[1].textContent);
+      document.getElementById("name").value = cells[1].textContent;
+      document.getElementById("age").value = cells[2].textContent;
+      document.getElementById("pno").value = cells[3].textContent;
+      document.getElementById("email").value = cells[4].textContent;
+
+      document.getElementById("register").disabled = true;
+      document.getElementById("delete").disabled = true;
+    }
+
+    function blockNumbers(event) {
+      var keyPressed = event.key;
+
+      if (!/^[a-zA-Z\s-,'.]+$/.test(keyPressed)) {
+        event.preventDefault();
+        document.getElementById("alert").innerText = "Numbers are not allowed !  ";
+      } else {
+        document.getElementById("alert").innerText = "";
+      }
+    }
+
+    function update() {
+      if (editedRow === null) {
+        document.getElementById("alert").innerText = "Select atleast one row to update !";
+        return;
+      }
+
+      var refToName = document.getElementById("name");
+      var refToAge = document.getElementById("age");
+      var refToPhoneNumber = document.getElementById("pno");
+      var refToEmail = document.getElementById("email");
+
+      if (
+        refToName.value === "" ||
+        refToAge.value === "" ||
+        refToPhoneNumber.value === "" ||
+        refToEmail.value === ""
+      ) {
+        document.getElementById("alert").innerText = "All fields are required!";
+        return;
+      }
+
+      if (isNaN(refToAge.value) || parseFloat(refToAge.value) <= 0) {
+        document.getElementById("alert").innerText =
+          "Please enter a valid age!";
+        return;
+      }
+
+      if (
+        isNaN(refToPhoneNumber.value) ||
+        refToPhoneNumber.value.length != 10
+      ) {
+        document.getElementById("alert").innerText =
+          "Please enter a valid Phone Number!";
+        return;
+      }
+
+      var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!emailPattern.test(refToEmail.value)) {
+        document.getElementById("alert").innerText =
+          "Please enter a valid Email address!";
+        return;
+      }
+
+      // console.log(editedRow.cells[1].innerText);
+      // console.log(editedRow.cells[1].textContent);
+
+      editedRow.cells[1].textContent = refToName.value;
+      editedRow.cells[2].textContent = refToAge.value;
+      editedRow.cells[3].textContent = refToPhoneNumber.value;
+      editedRow.cells[4].textContent = refToEmail.value;
+
+      document.getElementById("alert").innerText = "Data updated successfully!";
+
+      refToName.value = "";
+      refToAge.value = "";
+      refToPhoneNumber.value = "";
+      refToEmail.value = "";
+      editedRow = null;
+
+      document.getElementById("register").disabled = false;
+      document.getElementById("delete").disabled = false;
+    }
+  </script>
+</html>
